@@ -10,6 +10,10 @@ export const GetProveedores = async () => {
     }
 }
 
+export const ApiDepartamento = async () => {
+    return await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json')
+  }
+
 export const SendProveedor = async (data) => {
     try {
         let url = "http://localhost:8000/api/v1/provedores";
@@ -32,11 +36,12 @@ export const GetProveedor = async (id) =>  {
 
 export const UpdateProveedor = async (id, data) => {
     try {
-        let url = `http://localhost:8000/api/v1/provedores/${id}`;
-        const response = await axios.put(url, data);
-        return response.data;
+
+       const response = await axios.put(`http://localhost:8000/api/v1/provedores/${id}`, data);
+         return response.data;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 

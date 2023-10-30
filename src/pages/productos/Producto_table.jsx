@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import toast from "react-hot-toast";
 import { FaHome } from "react-icons/fa";
 import { GetProductos,DeleteProducto } from "../../api/Producto";
 import { AiFillEdit } from "react-icons/ai";
@@ -8,7 +9,7 @@ import { GetProveedor } from "../../api/Proveedor";
 
 const Producto_table = () => {
   const [data, setData] = useState([]);
-  const [proveedor, setProveedor] = useState([]);
+  const [proveedorNombres, setProveedorNombres] = useState({});
   const fetchData = async () => {
     const response = await GetProductos();
     setData(response.productos);
@@ -20,12 +21,20 @@ const Producto_table = () => {
   }, []);
 
   const proveedorId = async (id) => {
-    const response = await GetProveedor(id);
-    setProveedor(response.proveedor);
+    if (!proveedorNombres[id]) { // Verifica si ya tenemos el nombre del proveedor
+      const response = await GetProveedor(id);
+      setProveedorNombres(prevNombres => ({ ...prevNombres, [id]: response.proveedor.nombre }));
+
+  
+    }
   };
   useEffect(() => {
-    data.map((productos, index) => proveedorId(productos.proveedor_id));
+    const uniqueProveedorIds = [...new Set(data.map(item => item.proveedor_id))];
+    uniqueProveedorIds.forEach(id => {
+      proveedorId(id);
+    });
   }, [data]);
+
 
   const handleDelete = async (id) => {
     let confirmed = window.confirm(
@@ -57,25 +66,25 @@ const Producto_table = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-blue-900 text-white">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Nombre
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Codigo
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Descripcion
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Precio unitario
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Proveedor
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Editar
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Eliminar
                 </th>
               </tr>
@@ -96,7 +105,7 @@ const Producto_table = () => {
                     {productos.precio}
                   </td>
                   <td className="px-6 py-4 border-l border-r border-gray-200">
-                    {proveedor.nombre} 
+                  {proveedorNombres[productos.proveedor_id] || 'Cargando...'}
                   </td>
                   <td className="px-6 py-4 border-l border-r border-gray-200">
                     <NavLink to={`/actualizarProducto/${productos.id}`}>

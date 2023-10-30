@@ -1,29 +1,44 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { BsFillArrowLeftSquareFill } from "react-icons/bs";
-import { NavLink } from "react-router-dom";
+import { NavLink,useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { handleErrors } from "../../components/payloads/Error";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
-import { SendAlmacen } from "../../api/Almacen";
+import { SendAlmacen,UpdateAlmacen,GetAlmacen } from "../../api/Almacen";
 const Registrar_almacen = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, setValue } = useForm();
+  const params = useParams();
 
   const onSubmit = async (data) => {
     try {
-      await SendAlmacen(data);
-      toast.success("Almacen creado con éxito");
-      navigate("/almacenes");
-    } catch (error) {
-      const dataError = error.response.data;
-      const keys = Object.keys(dataError);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const value = dataError[key];
-        toast.error(`${key}: ${value}`);
+      if(params.id){
+        await UpdateAlmacen(data,params.id);
+        toast.success("Almacen actualizado con éxito");
+        navigate("/almacenes");
+      } else {
+        await SendAlmacen(data);
+        toast.success("Almacen creado con éxito");
+        navigate("/almacenes");
       }
+    } catch (error) {
+      handleErrors(error);
     }
-  }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (params.id) {
+        const data = await GetAlmacen(params.id); 
+        setValue("nombre", data.almacen.nombre);
+        setValue("ubicacion", data.almacen.ubicacion);
+        setValue("capacidad_total", data.almacen.capacidad_total);
+      }
+    };
+  
+    fetchData();
+  }, [params.id, setValue, register]);
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <form  

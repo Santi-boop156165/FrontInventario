@@ -7,6 +7,7 @@ import { FaHome } from "react-icons/fa";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDeleteSweep } from "react-icons/md";
 import { DeleteProveedor } from "../../api/Proveedor";
+
 const Provedor_table = () => {
   const [data, setData] = useState([]);
   const fetchData = async () => {
@@ -47,25 +48,25 @@ const Provedor_table = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-blue-900 text-white">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Nombre
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Telefono
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Region
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Ciudad
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Direccion
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Editar
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                <th className="px-6 py-3 text-center text-sm font-medium border-l border-r border-gray-200">
                   Eliminar
                 </th>
               </tr>

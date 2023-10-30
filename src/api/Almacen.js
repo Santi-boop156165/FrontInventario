@@ -32,3 +32,25 @@ export const SendAlmacen = async (data) => {
         throw error;
     }
 }
+
+export const UpdateAlmacen = async (data, id) => {
+    try {
+        const response = await axios.put(`http://localhost:8000/api/v1/almacenes/${id}`, data);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+
+}
+
+export const DeleteAlmacen = async (id) => {
+    try {
+        let url = `http://localhost:8000/api/v1/almacenes/${id}`;
+        const response = await axios.delete(url);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

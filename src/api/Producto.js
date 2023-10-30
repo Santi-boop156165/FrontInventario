@@ -34,6 +34,16 @@ export const SendProducto = async (data) => {
     }
 }
 
+export const UpdateProducto = async (data, id) => {
+    try {
+       const response = await axios.put(`http://localhost:8000/api/v1/productos/${id}`, data);
+         return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export const DeleteProducto = async (id) => {
     try {
         let url = `http://localhost:8000/api/v1/productos/${id}`;
