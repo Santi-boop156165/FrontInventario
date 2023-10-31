@@ -8,6 +8,7 @@ import { GetInventario, SendInventario, UpdateInventario } from "../../api/Inven
 import { useEffect, useState } from "react";
 import { GetAlmacenes } from '../../api/Almacen';
 import { useNavigate } from "react-router";
+import { handleErrors } from "../../components/payloads/Error";
 
 const Registro_inventario = () => {
   const params = useParams();
@@ -35,21 +36,28 @@ const Registro_inventario = () => {
   }, []);
 
   const onSubmit = async (data) => {
-     if(params.id){
-      await UpdateInventario(data,params.id);
-      toast.success("Inventario actualizado con éxito");
-      navigate("/inventarios");
-    } else {
-      await SendInventario(data);
-      toast.success("Inventario creado con éxito");
-      navigate("/inventarios");
-    }
+     try{
+
+      if(params.id){
+        await UpdateInventario(data,params.id);
+        toast.success("Inventario actualizado con éxito");
+        navigate("/inventarios");
+      } else {
+        await SendInventario(data);
+        toast.success("Inventario creado con éxito");
+        navigate("/inventarios");
+      }
+
+     }catch (error){
+      handleErrors(error)
+     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       if (params.id) {
         const data = await GetInventario(params.id);
+        setValue("codigo_ref", data.inventario.codigo_ref);
         setValue("cantidad_de_producto", data.inventario.cantidad_de_producto);
         setValue("producto_id", data.inventario.producto_id);
         setValue("almacen_id", data.inventario.almacen_id);
@@ -76,6 +84,17 @@ const Registro_inventario = () => {
         <h1 className="text-2xl font-semibold mb-6 text-center">
           Registrar Inventario
         </h1>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600">
+            Codigo
+          </label>
+          <input
+            autoComplete="off"
+            {...register("codigo_ref")}
+            className="mt-1 p-2 w-full border rounded-md"
+            type="text"
+          />
+        </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-600">
             Cantidad

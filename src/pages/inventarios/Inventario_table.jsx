@@ -9,6 +9,7 @@ import { GetAlmacen } from "../../api/Almacen";
 import { GetProducto } from "../../api/Producto";
 import toast from "react-hot-toast";
 
+
 const Inventario_table = () => {
 
   const [data, setData] = useState([]);
@@ -86,6 +87,9 @@ const Inventario_table = () => {
                   Fecha
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
+                  Codigo
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
                   Cantidad
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium border-l border-r border-gray-200">
@@ -110,6 +114,9 @@ const Inventario_table = () => {
                 <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : ""}>
                   <td className="px-6 py-4 border-l border-r border-gray-200">
                     {inventarios.fecha_de_creacion}
+                  </td>
+                  <td className="px-6 py-4 border-l border-r border-gray-200">
+                    {inventarios.codigo_ref}
                   </td>
                   <td className="px-6 py-4 border-l border-r border-gray-200">
                     {inventarios.cantidad_de_producto}
