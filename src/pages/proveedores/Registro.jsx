@@ -1,52 +1,102 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { BsFillArrowLeftSquareFill } from "react-icons/bs";
+import { ApiDepartamento } from "../../api/Proveedor";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { SendProveedor, UpdateProveedor, GetProveedor } from "../../api/Proveedor";
+import { handleErrors } from "../../components/payloads/Error";
+
+import {
+  SendProveedor,
+  UpdateProveedor,
+  GetProveedor,
+} from "../../api/Proveedor";
+
 const Registro = () => {
-
   const navigate = useNavigate();
-  const { register, handleSubmit,setValue  } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
+  const [departamento, setDepartamento] = useState([]);
   const params = useParams();
-  const onSubmit = async (data) => {
+  const [selectedDepartamento, setSelectedDepartamento] = useState(null);
+  const [proveedor, setProveedor] = useState({});
+  const [filteredMunicipios, setFilteredMunicipios] = useState([]);
 
+  const onSubmit = async (data) => {
     try {
       if (params.id) {
+        console.log(data);
         await UpdateProveedor(data, params.id);
-        toast.success("Proveedor actualizado con éxito");
-        navigate("/proveedores");
+       
       } else {
         await SendProveedor(data);
-        toast.success("Proveedor creado con éxito");
-        navigate("/proveedores");
       }
+      toast.success(`Proveedor ${params.id ? 'actualizado' : 'creado'} con éxito`);
+      navigate("/proveedores");
     } catch (error) {
-      const dataError = error.response.data;
-      const keys = Object.keys(dataError);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const value = dataError[key];
-        toast.error(`${key}: ${value}`);
-      }
+      handleErrors(error);
     }
   };
-  
+
+  const getProveedor = async () => {
+    try {
+      const response = await GetProveedor(params.id);
+      setProveedor(response.proveedor);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await ApiDepartamento();
+      setDepartamento(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      if (params.id) {
-        const data = await GetProveedor(params.id); 
-        setValue("nombre", data.proveedor.nombre);
-        setValue("telefono", data.proveedor.telefono);
-        setValue("region", data.proveedor.region);
-        setValue("ciudad", data.proveedor.ciudad);
-        setValue("direccion", data.proveedor.direccion);
-      }
-    };
-  
     fetchData();
-  }, [params.id, setValue, register]); 
+  }, []);
+
+  useEffect(() => {
+    if (params.id) {
+      getProveedor();
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    if (Object.keys(proveedor).length > 0) {
+      Object.keys(proveedor).forEach((key) => {
+        setValue(key, proveedor[key]);
+      });
+
+      if (proveedor.hasOwnProperty('region')) {
+        setSelectedDepartamento(proveedor.region);
+      }
+
+    
+    }
+  }, [proveedor, setValue]);
+
+  useEffect(() => {
+    if (selectedDepartamento) {
+      const municipiosFiltrados = departamento.filter(
+        (item) => item.departamento === selectedDepartamento
+      );
+      setFilteredMunicipios(municipiosFiltrados);
+    }
+  }, [selectedDepartamento, departamento]);
+
+  const uniqueList = Object.values(
+    departamento.reduce((obj, item) => {
+      if (!obj[item.departamento]) {
+        obj[item.departamento] = item;
+      }
+      return obj;
+    }, {})
+  );
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <form
@@ -80,30 +130,49 @@ const Registro = () => {
             {...register("telefono")}
             autoComplete="off"
             className="mt-1 p-2 w-full border rounded-md"
-            type="text"
+            type="number"
+            
           />
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-600">
-            Region
+            Departamento
           </label>
-          <input
+          <select
             {...register("region")}
-            autoComplete="off"
+            defaultValue="" // Agrega esto
+            onChange={(e) => setSelectedDepartamento(e.target.value)}
             className="mt-1 p-2 w-full border rounded-md"
-            type="text"
-          />
+            id="proveedor"
+          >
+            <option value="" disabled>
+              Seleccione un departamento
+            </option>
+            {uniqueList.map((item) => (
+              <option key={item.c_digo_dane_del_municipio} value={item.departamento}>
+                {item.departamento}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-600">
-            Ciudad
-          </label>
-          <input
+          <select
             {...register("ciudad")}
-            autoComplete="off"
+            defaultValue="" 
             className="mt-1 p-2 w-full border rounded-md"
-            type="text"
-          />
+          >
+            <option value="" disabled>
+              Seleccione un municipio
+            </option>
+            {filteredMunicipios.map((item) => (
+              <option
+                key={item.c_digo_dane_del_municipio}
+                value={item.municipio}
+              >
+                {item.municipio}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-600">

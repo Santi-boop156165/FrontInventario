@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const GetProveedores = async () => {
     try {
-        let url = "http://localhost:8000/api/v1/provedores";
+        let url = "https://devinventarioazure.azurewebsites.net/api/v1/provedores";
         const response = await axios.get(url);
         return response.data;
     } catch (error) {
@@ -10,9 +10,13 @@ export const GetProveedores = async () => {
     }
 }
 
+export const ApiDepartamento = async () => {
+    return await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json')
+  }
+
 export const SendProveedor = async (data) => {
     try {
-        let url = "http://localhost:8000/api/v1/provedores";
+        let url = "https://devinventarioazure.azurewebsites.net/api/v1/provedores";
         const response = await axios.post(url, data);
         return response.data;
     } catch (error) {
@@ -22,7 +26,7 @@ export const SendProveedor = async (data) => {
 
 export const GetProveedor = async (id) =>  {
     try {
-        let url = `http://localhost:8000/api/v1/provedores/${id}`;
+        let url = `https://devinventarioazure.azurewebsites.net/api/v1/provedores/${id}`;
         const response = await axios.get(url);
         return response.data;
     } catch (error) {
@@ -30,20 +34,21 @@ export const GetProveedor = async (id) =>  {
     }
 }
 
-export const UpdateProveedor = async (id, data) => {
+export const UpdateProveedor = async (data, id) => {
     try {
-        let url = `http://localhost:8000/api/v1/provedores/${id}`;
-        const response = await axios.put(url, data);
-        return response.data;
+
+       const response = await axios.put(`https://devinventarioazure.azurewebsites.net/api/v1/provedores/${id}`, data);
+         return response.data;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 
 
 export async function DeleteProveedor(id){
     try {
-      const response = await axios.delete(`http://localhost:8000/api/v1/provedores/${id}`);
+      const response = await axios.delete(`https://devinventarioazure.azurewebsites.net/api/v1/provedores/${id}`);
       return response.data;
     }catch (error){
       console.log(error);

@@ -1,12 +1,14 @@
 import React, { useEffect,useState } from "react";
-import { useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { GetProveedores } from "../../api/Proveedor";
 import toast from "react-hot-toast";
-import { NavLink } from "react-router-dom";
+import { NavLink,useParams } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { BsFillArrowLeftSquareFill } from "react-icons/bs";
-import { SendProducto } from "../../api/Producto";
+import { handleErrors } from "../../components/payloads/Error";
+import { SendProducto, UpdateProducto, GetProducto } from "../../api/Producto";
 export const Registro_producto = () => {
+  const params = useParams();
   const navigate = useNavigate();
   const { register, handleSubmit, setValue } = useForm();
   const [proveedores, setProveedores] = useState([]);
@@ -14,6 +16,7 @@ export const Registro_producto = () => {
     const response = await GetProveedores();
     setProveedores(response.provedores);
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -22,19 +25,36 @@ export const Registro_producto = () => {
 
   const onSubmit = async (data) => {
     try {
+     if(params.id){
+      await UpdateProducto(data,params.id);
+      toast.success("Producto actualizado con éxito");
+      navigate("/productos");
+    } else {
       await SendProducto(data);
       toast.success("Producto creado con éxito");
       navigate("/productos");
+    }
     } catch (error) {
-      const dataError = error.response.data;
-      const keys = Object.keys(dataError);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const value = dataError[key];
-        toast.error(`${key}: ${value}`);
-      }
+      handleErrors(error);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (params.id) {
+        const data = await GetProducto(params.id);
+        setValue("nombre", data.producto.nombre);
+        setValue("codigo", data.producto.codigo);
+        setValue("descripcion", data.producto.descripcion);
+        setValue("precio", data.producto.precio);
+        setValue("precio", data.producto.proveedor_id);
+        setValue("proveedor_id", data.producto.proveedor_id);
+
+      }
+    };
+  
+    fetchData();
+  }, [params.id, setValue, register]); 
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -113,13 +133,23 @@ export const Registro_producto = () => {
             ))}
           </select>
         </div>
-        <button
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-400 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200"
-          type="submit"
-          value="enviar"
-        >
-          Submit
-        </button>
+        {params.id ? (
+          <button
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-400 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200"
+            type="submit"
+            value="enviar"
+          >
+            Actualizar
+          </button>
+        ) : (
+          <button
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-400 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200"
+            type="submit"
+            value="enviar"
+          >
+            Registrar
+          </button>
+        )}
       </form>
     </div>
   );
