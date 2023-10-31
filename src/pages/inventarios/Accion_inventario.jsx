@@ -1,4 +1,4 @@
-import React from 'react'
+//import React from 'react'
 import Punto_entrada from '../../components/Punto_entrada'
 
 const Accion_inventario = () => {

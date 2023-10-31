@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Menu from "./pages/Menu";
 import Registro from "./pages/proveedores/Registro";
 import Accion_proveedor from "./pages/proveedores/Accion_proveedor";
@@ -42,6 +42,7 @@ const Router = () => {
       <Route path="inventarios" element={<Accion_inventario />} />
       <Route path="inventarios/registro" element={<Registro_inventario />} />
       <Route path="inventarios/lista" element={<Inventario_table />} />
+      <Route path = "actualizarInventario/:id" element={<Registro_inventario/>}/>
 
       <Route path="transacciones" element={<Accion_transaccion />} />
       <Route path="transacciones/registro" element={<Registro_transaccion />} />
