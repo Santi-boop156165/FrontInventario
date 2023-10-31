@@ -42,7 +42,7 @@ const Transaccion_table = () => {
           <div className="flex justify-between">
             <NavLink
               to={`/transacciones`}
-              className="text-gray-800 hover:text-gray-400 font-semibold py-4 px-4 rounded-full transition duration-300 ease-in-out"
+              className="text-gray-800 hover:text-gray-400 font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out"
             >
               <FaHome className="text-xl" />
             </NavLink>
