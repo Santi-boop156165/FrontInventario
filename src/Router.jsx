@@ -15,6 +15,7 @@ import Producto_table from "./pages/productos/Producto_table";
 import Almacen_table from "./pages/almacenes/Almacen_table";
 import Detalle_almacen from "./pages/almacenes/Detalle_almacen";
 import Inventario_table from "./pages/inventarios/Inventario_table";
+import Transaccion_table from "./pages/transacciones/Transaccion_table";
 
 
 const Router = () => {
@@ -46,6 +47,7 @@ const Router = () => {
 
       <Route path="transacciones" element={<Accion_transaccion />} />
       <Route path="transacciones/registro" element={<Registro_transaccion />} />
+      <Route path="transacciones/lista" element={<Transaccion_table />} />
     </Routes>
   );
 };
