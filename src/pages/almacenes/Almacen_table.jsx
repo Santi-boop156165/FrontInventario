@@ -14,19 +14,24 @@ const Almacen_table = () => {
   const handleCloseWarning = () => {
     setShowWarnings(false);
   };
-  const fetchData = async () => {
-    const response = await GetAlmacenes();
-    setData(response.almacenes);
-
-
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      const response = await GetAlmacenes();
+      setData(response.almacenes);
+      // Verifica si algún almacen cumple la condición
+      const shouldShowWarning = response.almacenes.some(almacen => almacen.capacidad_actual < 20);
+      setShowWarnings(shouldShowWarning);
+    };
+
     fetchData();
   }, []);
 
-  const shouldShowWarning = data.almacenes.some(almacen => almacen.capacidad_actual < 90);
-  setShowWarnings(shouldShowWarning);
+
+  
+
+  console.log(data);
+
+
 
   const handleDelete = async (id) => {
     let confirmed = window.confirm(
