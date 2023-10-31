@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Menu from "./pages/Menu";
 import Registro from "./pages/proveedores/Registro";
 import Accion_proveedor from "./pages/proveedores/Accion_proveedor";
-import Accion_producto from "./pages/productos/accion_producto";
+import Accion_producto from "./pages/productos/Accion_producto";
 import { Registro_producto } from "./pages/productos/Registro_producto";
 import Accion_almacen from "./pages/almacenes/Accion_almacen";
 import Registrar_almacen from "./pages/almacenes/Registrar_almacen";
