@@ -5,17 +5,28 @@ import { AiFillEdit } from "react-icons/ai";
 import { MdDeleteSweep } from "react-icons/md";
 import { MdProductionQuantityLimits } from "react-icons/md";
 import { GetAlmacenes, DeleteAlmacen } from "../../api/Almacen";
+import WarningCard from "../../components/Card";
 
 const Almacen_table = () => {
   const [data, setData] = useState([]);
+  const [showWarnings, setShowWarnings] = useState(true);
+
+  const handleCloseWarning = () => {
+    setShowWarnings(false);
+  };
   const fetchData = async () => {
     const response = await GetAlmacenes();
     setData(response.almacenes);
-    console.log(response.almacenes);
+
+
   };
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  const shouldShowWarning = data.almacenes.some(almacen => almacen.capacidad_actual < 90);
+  setShowWarnings(shouldShowWarning);
 
   const handleDelete = async (id) => {
     let confirmed = window.confirm(
@@ -114,6 +125,7 @@ const Almacen_table = () => {
             </tbody>
           </table>
         </div>
+        {showWarnings && <WarningCard onClose={handleCloseWarning} />}
       </div>
       <div className="flex justify-start gap-6 mt-4 px-8"></div>
     </div>
